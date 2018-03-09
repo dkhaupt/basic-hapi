@@ -1,0 +1,18 @@
+{
+  "name": "basic-hapi",
+  "version": "1.0.0",
+  "description": "Playground for learning node/hapi",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "hapi",
+    "tutorial"
+  ],
+  "author": "David H",
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^17.2.2"
+  }
+}
