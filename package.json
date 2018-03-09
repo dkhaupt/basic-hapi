@@ -13,6 +13,7 @@
   "author": "David H",
   "license": "ISC",
   "dependencies": {
-    "hapi": "^17.2.2"
+    "hapi": "^17.2.2",
+    "inert": "^5.1.0"
   }
 }
