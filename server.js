@@ -1,12 +1,18 @@
 'use strict';
 
-const Hapi=require('hapi');
+const Hapi = require('hapi');
+const mongojs = require('mongojs');
 
+// server definition
 const server = Hapi.server({
     port: 3000,
     host: 'localhost',
 });
 
+// db connection
+server.app.db = mongojs('basic-hapi', ['books']);
+
+// basic routes
 server.route({
     method: 'GET',
     path: '/',
@@ -36,6 +42,15 @@ server.route({
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/hello',
+    handler: (request, h) => {
+
+        return h.file('./public/hello.html');
+    }
+});
+
 server.events.on('response', function(request) {
     console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
 })
@@ -52,14 +67,7 @@ const init = async () => {
 
     await server.register(require('inert'));
 
-    server.route({
-        method: 'GET',
-        path: '/hello',
-        handler: (request, h) => {
-
-            return h.file('./public/hello.html');
-        }
-    });
+    await server.register(require('./routes/books'));
 
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
