@@ -18,23 +18,37 @@ server.route({
 
 server.route({
     method: 'GET',
-    path: '/test',
-    handler: (request, h) => {
-
-        return 'Hello test';
-    }
-});
-
-server.route({
-    method: 'GET',
     path: '/{name}',
     handler: (request, h) => {
+
+        // request.logger.info('In handler %s', request.path);
 
         return 'Hello ' + encodeURIComponent(request.params.name) + '!';
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/test',
+    handler: (request, h) => {
+
+        return 'just a test';
+    }
+});
+
+server.events.on('response', function(request) {
+    console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
+})
+
 const init = async () => {
+
+    await server.register({
+        plugin: require('hapi-pino'),
+        options: {
+            prettyPrint: false,
+            logEvents: [ ]
+        }
+    });
 
     await server.register(require('inert'));
 
