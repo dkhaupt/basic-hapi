@@ -1,7 +1,10 @@
 'use strict';
 
 const Hapi = require('hapi');
-const mongojs = require('mongojs');
+// const mongojs = require('mongojs');
+const mongoose = require('mongoose');
+const BookController = require('./src/controllers/book');
+const MongoDBUrl = 'mongodb://localhost:27017/bookapi';
 
 // server definition
 const server = Hapi.server({
@@ -10,7 +13,7 @@ const server = Hapi.server({
 });
 
 // db connection
-server.app.db = mongojs('basic-hapi', ['books']);
+// server.app.db = mongojs('basic-hapi', ['books']);
 
 // basic routes
 server.route({
@@ -51,6 +54,27 @@ server.route({
     }
 });
 
+// book routes
+
+server.route({
+    method:'GET',
+    path: '/books',
+    handler: BookController.list
+})
+
+server.route({
+    method: 'GET',
+    path: '/books/{id}',
+    handler: BookController.get
+})
+
+server.route({
+    method: 'POST',
+    path: '/books',
+    handler: BookController.create
+})
+
+// terminal logging of request path & response code
 server.events.on('response', function(request) {
     console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
 })
@@ -67,10 +91,10 @@ const init = async () => {
 
     await server.register(require('inert'));
 
-    await server.register(require('./routes/books'));
-
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
+
+    mongoose.connect(MongoDBUrl, {}).then(() => { console.log(`Connected to Mongo server`) }, err => { console.log(err) });
 };
 
 process.on('unhandledRejection', (err) => {

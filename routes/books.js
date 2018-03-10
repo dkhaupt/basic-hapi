@@ -26,6 +26,6 @@ exports.register = function(server, options, next) {
     return next();
 }
 
-exports.register.attributes = {
-    name: 'routes-books'
-}
+// exports.register.attributes = {
+//     name: 'routes-books'
+// }
