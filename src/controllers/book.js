@@ -22,7 +22,7 @@ exports.get = (req, h) => {
 
     return Book.findById(req.params.id).exec().then((book) => {
 
-        if(!book) return { message: 'Book not found' };
+        if(!book) return h.response({ message: 'Book not found' }).code(404);
 
         return { book: book };
 
@@ -45,7 +45,7 @@ exports.create = (req, h) => {
 
     return Book.create(bookData).then((book) => {
 
-        return { message: 'Book created successfully', book: book };
+        return h.response({ message: 'Book created successfully', book: book }).code(201);
 
     }).catch((err) => {
         
@@ -59,7 +59,7 @@ exports.update = (req, h) => {
 
     return Book.findById(req.params.id).exec().then((book) => {
 
-        if (!book) return { err: 'Book not found' };
+        if (!book) return h.response({ message: 'Book not found' }).code(404);
 
         book.title = req.payload.title;
         book.genre = req.payload.genre;
@@ -89,7 +89,7 @@ exports.patch = (req, h) => {
 
     return Book.findById(req.params.id).exec().then((book) => {
         
-        if (!book) return { message: 'Book not found' };
+        if (!book) return h.response({ message: 'Book not found' }).code(404);
 
         // update document w/ payload & return
         return book.update(req.payload).then((book) => {
@@ -114,7 +114,7 @@ exports.remove = (req, h) => {
 
     return Book.findById(req.params.id).exec().then((book) => {
 
-        if (!book) return { message: 'Book not found' };
+        if (!book) return h.response({ message: 'Book not found' }).code(404);
 
         // return removal outcome
         return book.remove().then((book) => {
