@@ -66,16 +66,16 @@ exports.update = (req, h) => {
         book.pageCount = req.payload.pageCount;
         book.image = req.payload.image;
 
-        let message = 'Book updated successfully';
-
         // TODO: figure out how to return properly from the post-save then()/catch()
-        book.save();
+        return book.save().then((book) => {
+            
+            return { message: 'Book updated successfully' };
 
-        return { message: message };
+        }).catch((err) => {
+            
+            return { err: err };
 
-    // }).then((data) => {
-
-    //     return { message: 'Book updated successfully' };
+        });
 
     }).catch((err) => {
 
@@ -87,15 +87,25 @@ exports.update = (req, h) => {
 // update 1+ fields without entire book
 exports.patch = (req, h) => {
 
-    return Book.findByIdAndUpdate(req.params.id, req.payload).exec().then(() => {
+    return Book.findById(req.params.id).exec().then((book) => {
+        
+        if (!book) return { message: 'Book not found' };
 
-    }).then((data) => {
+        // update document w/ payload & return
+        return book.update(req.payload).then((book) => {
 
-        return { message: 'Fields updated successfully' };
+            return { message: 'Book field(s) updated successfully'}
+
+        }).catch((err) => {
+
+            return { err: err };
+
+        });
 
     }).catch((err) => {
 
         return { err: err };
+
     });
 }
 
@@ -106,11 +116,15 @@ exports.remove = (req, h) => {
 
         if (!book) return { message: 'Book not found' };
 
-        book.remove(function(err) {
-
-            if (err) return { dberror: err };
+        // return removal outcome
+        return book.remove().then((book) => {
 
             return { success: true };
+
+        }).catch((err) => {
+
+            return { err: err };
+
         });
 
     }).catch((err) => {
