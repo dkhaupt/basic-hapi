@@ -12,9 +12,6 @@ const server = Hapi.server({
     host: 'localhost',
 });
 
-// db connection
-// server.app.db = mongojs('basic-hapi', ['books']);
-
 // basic routes
 server.route({
     method: 'GET',
