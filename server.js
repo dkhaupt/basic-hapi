@@ -74,6 +74,24 @@ server.route({
     handler: BookController.create
 })
 
+server.route({
+    method: 'PUT',
+    path: '/books/{id}',
+    handler: BookController.update
+})
+
+server.route({
+    method: 'PATCH',
+    path: '/books/{id}',
+    handler: BookController.patch
+})
+
+server.route({
+    method: 'DELETE',
+    path: '/books/{id}',
+    handler: BookController.remove
+})
+
 // terminal logging of request path & response code
 server.events.on('response', function(request) {
     console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
