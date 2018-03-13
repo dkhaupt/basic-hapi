@@ -1,63 +1,68 @@
 var Book = require('../models/book');
 
 // list books
-exports.list = (req, h) => {
-    return Book.find({}).exec().then((book) => {
+exports.list = async (req, h) => {
 
+    try {
 
-        return { books: book };
+        books = await Book.find({}).exec();
 
+        return { books: books };
 
-    }).catch((err) => {
-
+    } catch (err) { 
 
         return { err: err };
 
-
-    });
+    }
 }
 
 // get book by ID
-exports.get = (req, h) => {
+exports.get = async (req, h) => {
+    
+    try {
 
-    return Book.findById(req.params.id).exec().then((book) => {
+        book = await Book.findById(req.params.id).exec();
 
-        if(!book) return h.response({ message: 'Book not found' }).code(404);
+        if (!book) return h.response({ message: 'Book not found' }).code(404); 
 
         return { book: book };
 
-    }).catch((err) => {
+    } catch (err) {
 
         return { err: err };
 
-    });
+    }
 }
 
 // create a book
-exports.create = (req, h) => {
-    
-    const bookData = {
-        title: req.payload.title,
-        genre: req.payload.genre,
-        pageCount: req.payload.pageCount,
-        image: req.payload.image
-    };
+exports.create = async (req, h) => {
 
-    return Book.create(bookData).then((book) => {
+    try {
+
+        const bookData = {
+            title: req.payload.title,
+            genre: req.payload.genre,
+            pageCount: req.payload.pageCount,
+            image: req.payload.image
+        };
+
+        book = await Book.create(bookData);
 
         return h.response({ message: 'Book created successfully', book: book }).code(201);
 
-    }).catch((err) => {
-        
+    } catch (err) {
+
         return { err: err };
 
-    });
+    }
 }
 
 // update a book
-exports.update = (req, h) => {
+exports.update = async (req, h) => {
 
-    return Book.findById(req.params.id).exec().then((book) => {
+    try {
+
+        book = await Book.findById(req.params.id).exec();
 
         if (!book) return h.response({ message: 'Book not found' }).code(404);
 
@@ -66,70 +71,54 @@ exports.update = (req, h) => {
         book.pageCount = req.payload.pageCount;
         book.image = req.payload.image;
 
-        // TODO: figure out how to return properly from the post-save then()/catch()
-        return book.save().then((book) => {
-            
-            return { message: 'Book updated successfully' };
+        book = await book.save()
 
-        }).catch((err) => {
-            
-            return { err: err };
+        if (book) { return { message: 'Book updated successfully' }; }
 
-        });
-
-    }).catch((err) => {
+    } catch (err) {
 
         return { err: err };
 
-    });
+    }
+
 }
 
 // update 1+ fields without entire book
-exports.patch = (req, h) => {
+exports.patch = async (req, h) => {
 
-    return Book.findById(req.params.id).exec().then((book) => {
-        
+    try {
+
+        book = await Book.findById(req.params.id).exec();
+
         if (!book) return h.response({ message: 'Book not found' }).code(404);
 
-        // update document w/ payload & return
-        return book.update(req.payload).then((book) => {
+        book = await book.update(req.payload);
 
-            return { message: 'Book field(s) updated successfully'}
+        return { message: 'Book field(s) updated successfully' };
 
-        }).catch((err) => {
-
-            return { err: err };
-
-        });
-
-    }).catch((err) => {
+    } catch (err) { 
 
         return { err: err };
 
-    });
+    }
 }
 
 // delete by ID
-exports.remove = (req, h) => {
+exports.remove = async (req, h) => {
+    
+    try {
 
-    return Book.findById(req.params.id).exec().then((book) => {
+        book = await Book.findById(req.params.id).exec();
 
         if (!book) return h.response({ message: 'Book not found' }).code(404);
 
-        // return removal outcome
-        return book.remove().then((book) => {
+        book.remove();
 
-            return { success: true };
+        return { success: true };
 
-        }).catch((err) => {
+    } catch (err) {
 
-            return { err: err };
-
-        });
-
-    }).catch((err) => {
-        
         return { err: err };
 
-    });
+    }
 }
