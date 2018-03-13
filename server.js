@@ -5,6 +5,7 @@ const Hapi = require('hapi');
 const mongoose = require('mongoose');
 const BookController = require('./src/controllers/book');
 const MongoDBUrl = 'mongodb://localhost:27017/bookapi';
+const UserController = require('./src/controllers/user');
 
 // server definition
 const server = Hapi.server({
@@ -57,37 +58,39 @@ server.route({
     method:'GET',
     path: '/books',
     handler: BookController.list
-})
+});
 
 server.route({
     method: 'GET',
     path: '/books/{id}',
     handler: BookController.get
-})
+});
 
 server.route({
     method: 'POST',
     path: '/books',
     handler: BookController.create
-})
+});
 
 server.route({
     method: 'PUT',
     path: '/books/{id}',
     handler: BookController.update
-})
+});
 
 server.route({
     method: 'PATCH',
     path: '/books/{id}',
     handler: BookController.patch
-})
+});
 
 server.route({
     method: 'DELETE',
     path: '/books/{id}',
     handler: BookController.remove
-})
+});
+
+// user routes
 
 // terminal logging of request path & response code
 server.events.on('response', function(request) {
