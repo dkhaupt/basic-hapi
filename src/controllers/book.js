@@ -1,5 +1,7 @@
 var Book = require('../models/book');
 
+// comment for test-issue issue
+
 // list books
 exports.list = (req, h) => {
     return Book.find({}).exec().then((book) => {
